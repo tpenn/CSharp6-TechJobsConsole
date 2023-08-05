@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Text;
 
 namespace TechJobsConsoleAutograded6
@@ -11,7 +12,8 @@ namespace TechJobsConsoleAutograded6
         public static List<Dictionary<string, string>> FindAll()
         {
             LoadData();
-            return AllJobs;
+            // Bonus Mission - Returning a shallow copy of allJobs
+            return new List<Dictionary<string, string>>(AllJobs);
         }
 
         /*
@@ -46,8 +48,24 @@ namespace TechJobsConsoleAutograded6
         {
             // load data, if not already loaded
             LoadData();
+            String search = value.ToLower();
+            List<Dictionary<string, string>> results = new List<Dictionary<string, string>>();
+            foreach (Dictionary<string, string> job in AllJobs)
+            {
+                foreach (string val in job.Values)
+                {
+                    if (val.ToLower().Contains(search))
+                    {
+                        if (!results.Contains(job))
+                        {
+                            results.Add(job);
+                        }
+                        break;
+                    }
+                }
+            }
 
-            return null;
+            return results;
         }
 
         /**
@@ -63,14 +81,14 @@ namespace TechJobsConsoleAutograded6
             LoadData();
 
             List<Dictionary<string, string>> jobs = new List<Dictionary<string, string>>();
-
+            value = value.ToLower();
             foreach (Dictionary<string, string> row in AllJobs)
             {
                 string aValue = row[column];
 
 
                 //TODO: Make search case-insensitive
-                if (aValue.Contains(value))
+                if (aValue.ToLower().Contains(value))
                 {
                     jobs.Add(row);
                 }
